@@ -2,23 +2,31 @@ def count(d):
 	return sum([count(v)+1 if len(v) > 0 else 1 for v in d.values()])
 	
 def count_nodes(pats):
-	prefixes = {}
+	prefixes = [{}]*8
 	
 	for pat in pats:
 		for char_idx in range(len(pat)):
-			if char_idx == 0:
-				if pat[char_idx] not in prefixes:
-					prefixes[pat[char_idx]] = {}
-					continue
-			dict = prefixes
-			for i in range(char_idx):
-				dict = dict[pat[i]]
-			if pat[char_idx] not in dict:
-				dict[pat[char_idx]] = {}
+			char_bits = bin(int.from_bytes(pat[char_idx].encode(), 'big'))
+			char_bits = str(char_bits)[2:]
+			if len(char_bits) < 8:
+				char_bits = '0'*(8-len(char_bits)) + char_bits
+			for bit_idx in range(8):
+				cur_char = char_bits[bit_idx]
+				if char_idx == 0:
+					if cur_char not in prefixes[bit_idx]:
+						prefixes[bit_idx][cur_char] = {}
+						continue
+				dict = prefixes[bit_idx]
+				for i in range(char_idx):
+					dict = dict[cur_char]
+				if cur_char not in dict:
+					dict[cur_char] = {}
 	
+	#[print(bin(int.from_bytes(pat.encode(), 'big'))) for pat in pats]
 	#print(prefixes)
+	[print(x) for x in prefixes]
 	
-	return count(prefixes)
+	return sum([count(x) for x in prefixes])
 	
 def used(groups, x):
 	for group in groups:
@@ -68,8 +76,10 @@ def str_grp(strings, num_groups):
 	
 	
 if __name__=='__main__':
-	groups = str_grp(['me', 'him', 'he', 'his'], 2)
+	#groups = str_grp(['me', 'him', 'he', 'his'], 2)
+	groups = str_grp(['me', 'him', 'he', 'his', 'dog', 'cat'], 2)
 	
+	print(count_nodes(groups))
 	
 	for group in groups:
 		print(group)
