@@ -18,11 +18,11 @@ def count_nodes(pats):
 						continue
 				dict = prefixes[bit_idx]
 				for i in range(char_idx):
-					dict = dict[cur_char]
+					dict = dict[char_bits[i]]
 				if cur_char not in dict:
 					dict[cur_char] = {}
 	
-	#[print(bin(int.from_bytes(pat.encode(), 'big'))) for pat in pats]
+	[[print(str(bin(int.from_bytes(char.encode(), 'big')))[2:]) for char in pat] for pat in pats]
 	#print(prefixes)
 	[print(x) for x in prefixes]
 	
