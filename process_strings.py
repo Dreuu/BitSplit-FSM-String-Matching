@@ -16,10 +16,17 @@ def calculate_mem(num_nodes, pats):
     return memory_requirements
 
 # Calculates the number of nodes required for an FSM given input strings
+# pats = pattern strings
 def count_nodes(pats):
-    prefixes = [dict() for _ in range(8)]
+	# Stores node counts for each FSM network
     node_counts = [0]*8
+	
+	# Maximum depth of an FSM = max string length
     max_depth = max([len(x) for x in pats])
+	
+	# There will be a node required for each zero and each one
+	#  in every character in every string
+	#  They overlap, so they are only set once
     node_array0 = [['0']*8 for _ in range(max_depth)]
     node_array1 = [['0']*8 for _ in range(max_depth)]
 
@@ -71,13 +78,18 @@ def str_grp(strings, num_groups):
     print('Starting Seed Selection and Correlation Estimation Phase')
     print('-'*60)
 
+	# Set first group seed
     groups = [[strings[0]]]
     ns_groups = [ns_strings[1]]
     print('Group 1 of', num_groups, end='\r')
-
+	
+	#######################################################
     # Seed Selection and Correlation Estimation Phase
-    for i in range(1, num_groups):
+    #######################################################
+	for i in range(1, num_groups):
         correlation_vector = [list()]*len(strings)
+		
+		# Find the least correlated string compared to the created groups
         for j in range(len(strings)):
             correlation_vector[j] = max([correlation(
                 groups[x], strings[j], ns_groups[x], ns_strings[j]) for x in range(len(groups[:i]))])
@@ -92,8 +104,10 @@ def str_grp(strings, num_groups):
     print('-'*60)
     print('Starting Seed Growing Phase')
     print('-'*60)
-
+	#######################################################
     # Seed Growing Phase
+	#######################################################
+	# Place every remaining string in a group
     for idx in range(n-num_groups):
         corr_diffs = [0]*len(strings)
         for i in range(len(strings)):
